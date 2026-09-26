@@ -1,0 +1,346 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.pagina {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 8px 4px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.encabezado h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.encabezado p {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.aviso {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border-left: 3px solid var(--oro);
+  background: color-mix(in srgb, var(--oro) 10%, var(--tarjeta));
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+h2 {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* ---------- KPIs ---------- */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+}
+.kpi-etiqueta {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+.kpi-valor {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+/* ---------- Distribución (dona) ---------- */
+.distribucion-cuerpo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 32px;
+  padding: 20px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+}
+
+.dona-contenedor {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  flex-shrink: 0;
+}
+.dona {
+  width: 100%;
+  height: 100%;
+}
+.segmento {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.segmento:hover,
+.segmento:focus-visible {
+  opacity: 0.85;
+  outline: none;
+}
+
+.dona-centro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+.centro-etiqueta {
+  font-size: 0.72rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+.centro-valor {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+.centro-detalle {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+}
+
+.leyenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.leyenda li:hover,
+.leyenda li:focus-visible {
+  background: var(--bg);
+  outline: none;
+}
+.leyenda-etiqueta {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.leyenda-peso {
+  font-size: 0.9rem;
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--borde);
+  flex-shrink: 0;
+}
+
+/* ---------- Tabla ---------- */
+.tabla-seccion {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 20px;
+}
+.nota-tabla {
+  margin: -6px 0 12px;
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+}
+.tabla-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde);
+  white-space: nowrap;
+}
+th {
+  color: var(--texto-suave);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+td {
+  font-variant-numeric: tabular-nums;
+}
+.celda-accion {
+  white-space: nowrap;
+}
+
+.btn-eliminar {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+.btn-eliminar:hover {
+  background: color-mix(in srgb, #c0392b 12%, var(--bg));
+}
+
+/* Confirmación de baja: reemplaza al botón 🗑️ hasta que el usuario decide */
+.confirmar-baja {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.confirmar-texto {
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+}
+.btn-confirmar-si,
+.btn-confirmar-no {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-confirmar-si {
+  background: #c0392b;
+  color: #fff;
+}
+.btn-confirmar-si:hover {
+  background: #a5311f;
+}
+.btn-confirmar-no {
+  background: var(--bg);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+}
+.btn-confirmar-no:hover {
+  background: var(--borde);
+}
+
+/* ---------- Formulario ---------- */
+.alta {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 20px;
+}
+.alta form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: end;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 140px;
+}
+.campo-ancho {
+  width: 220px;
+  flex: 1;
+}
+.campo label,
+.campo-label-estatico {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+.campo input,
+.campo select {
+  padding: 10px 12px;
+  border: 1.5px solid var(--borde);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--texto);
+  font-family: inherit;
+  font-size: 0.92rem;
+  outline: none;
+}
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--oro);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--oro) 20%, transparent);
+}
+
+/* Precio por acción: ya no se escribe, se muestra lo que devuelve la cotización */
+.precio-automatico {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1.5px dashed var(--borde);
+  border-radius: 10px;
+  background: var(--tarjeta);
+}
+.precio-valor {
+  font-weight: 700;
+  color: var(--texto);
+}
+.precio-estado {
+  font-size: 0.86rem;
+  color: var(--texto-suave);
+}
+.precio-estado-error {
+  color: #c0392b;
+}
+
+.boton-agregar {
+  padding: 11px 20px;
+  border: none;
+  border-top: 2px solid var(--oro);
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--marino-1), var(--marino-2));
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--sombra);
+}
+.boton-agregar:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+.boton-agregar:hover {
+  transform: translateY(-1px);
+}
+.error {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  color: #c0392b;
+}

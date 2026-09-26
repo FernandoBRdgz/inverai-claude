@@ -1,0 +1,205 @@
+<div class="pagina">
+  <header class="encabezado">
+    <h1>📊 Mi portafolio</h1>
+    <p>Da de alta tus posiciones y consulta cómo se distribuye tu cartera.</p>
+  </header>
+
+  @if (usandoEjemplo()) {
+    <div class="aviso">
+      📌 <strong>Ejemplo simulado</strong> — así se vería tu distribución. No es dato de mercado
+      real. Da de alta tu primera posición abajo para reemplazarlo por tu propia cartera.
+    </div>
+  }
+
+  <section class="kpis">
+    <div class="kpi">
+      <span class="kpi-etiqueta">Valor total</span>
+      <span class="kpi-valor">${{ valorTotal() | number: '1.0-0' }}</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi-etiqueta">Posiciones</span>
+      <span class="kpi-valor">{{ filas().length }}</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi-etiqueta">Mayor posición</span>
+      @if (mayorPosicion(); as mayor) {
+        <span class="kpi-valor">{{ mayor.ticker }} · {{ mayor.peso * 100 | number: '1.0-1' }}%</span>
+      }
+    </div>
+  </section>
+
+  <section class="distribucion">
+    <h2>Distribución</h2>
+    <div class="distribucion-cuerpo">
+      <div class="dona-contenedor">
+        <svg
+          class="dona"
+          viewBox="0 0 220 220"
+          role="img"
+          [attr.aria-label]="'Distribución de la cartera por posición'"
+        >
+          <g transform="rotate(-90 110 110)">
+            <circle
+              cx="110"
+              cy="110"
+              [attr.r]="radio"
+              fill="none"
+              stroke="var(--borde)"
+              [attr.stroke-width]="grosor"
+            />
+            @for (seg of segmentos(); track seg.id) {
+              <circle
+                class="segmento"
+                cx="110"
+                cy="110"
+                [attr.r]="radio"
+                fill="none"
+                [attr.stroke]="seg.color"
+                [attr.stroke-width]="grosor"
+                [attr.stroke-dasharray]="seg.dasharray"
+                [attr.stroke-dashoffset]="seg.dashoffset"
+                role="img"
+                [attr.aria-label]="seg.etiqueta + ': ' + (seg.peso * 100 | number: '1.0-1') + '%, $' + (seg.valor | number: '1.0-0')"
+                (mouseenter)="segmentoActivo.set(seg)"
+                (mouseleave)="segmentoActivo.set(null)"
+              />
+            }
+          </g>
+        </svg>
+
+        <div class="dona-centro">
+          @if (segmentoActivo(); as activo) {
+            <span class="centro-etiqueta">{{ activo.etiqueta }}</span>
+            <span class="centro-valor">{{ activo.peso * 100 | number: '1.0-1' }}%</span>
+            <span class="centro-detalle">${{ activo.valor | number: '1.0-0' }}</span>
+          } @else {
+            <span class="centro-etiqueta">Valor total</span>
+            <span class="centro-valor">${{ valorTotal() | number: '1.0-0' }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Los <circle> del SVG no reciben foco de teclado en Chrome (limitación real del
+           navegador para formas SVG puras, incluso con tabindex), así que la leyenda —
+           elementos HTML normales — es el camino accesible por teclado al mismo detalle
+           que el hover del mouse sobre la dona. -->
+      <ul class="leyenda">
+        @for (seg of segmentos(); track seg.id) {
+          <li
+            tabindex="0"
+            (mouseenter)="segmentoActivo.set(seg)"
+            (mouseleave)="segmentoActivo.set(null)"
+            (focus)="segmentoActivo.set(seg)"
+            (blur)="segmentoActivo.set(null)"
+          >
+            <span class="swatch" [style.background]="seg.color"></span>
+            <span class="leyenda-etiqueta">{{ seg.etiqueta }}</span>
+            <span class="leyenda-peso">{{ seg.peso * 100 | number: '1.0-1' }}%</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="tabla-seccion">
+    <h2>Posiciones</h2>
+    @if (usandoEjemplo()) {
+      <p class="nota-tabla">Ejemplo, no editable.</p>
+    }
+    <div class="tabla-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Ticker</th>
+            <th>Empresa</th>
+            <th>Acciones</th>
+            <th>Precio</th>
+            <th>Valor</th>
+            <th>Peso</th>
+            @if (!usandoEjemplo()) {
+              <th></th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (fila of filas(); track fila.id; let i = $index) {
+            <tr>
+              <td><span class="swatch" [style.background]="colorDeFila(i)"></span></td>
+              <td>{{ fila.ticker }}</td>
+              <td>{{ fila.nombre }}</td>
+              <td>{{ fila.acciones }}</td>
+              <td>${{ fila.precio | number: '1.2-2' }}</td>
+              <td>${{ fila.valor | number: '1.0-0' }}</td>
+              <td>{{ fila.peso * 100 | number: '1.0-1' }}%</td>
+              @if (!usandoEjemplo()) {
+                <td class="celda-accion">
+                  @if (confirmandoId() === fila.id) {
+                    <span class="confirmar-baja">
+                      <span class="confirmar-texto">¿Eliminar?</span>
+                      <button type="button" class="btn-confirmar-si" (click)="confirmarEliminacion(fila.id)">Sí</button>
+                      <button type="button" class="btn-confirmar-no" (click)="cancelarEliminacion()">Cancelar</button>
+                    </span>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn-eliminar"
+                      title="Dar de baja esta posición"
+                      [attr.aria-label]="'Dar de baja ' + fila.ticker"
+                      (click)="pedirConfirmacion(fila.id)"
+                    >🗑️</button>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="alta">
+    <h2>Dar de alta una posición</h2>
+    <form (ngSubmit)="agregarPosicion()">
+      <div class="campo campo-ancho">
+        <label for="empresa">Empresa</label>
+        <select
+          id="empresa"
+          name="empresa"
+          [ngModel]="tickerSeleccionado()"
+          (ngModelChange)="seleccionarEmpresa($event)"
+        >
+          <option value="" disabled>Selecciona una empresa…</option>
+          @for (empresa of empresas; track empresa.ticker) {
+            <option [value]="empresa.ticker">{{ empresa.nombre }} ({{ empresa.ticker }})</option>
+          }
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="acciones">Acciones</label>
+        <input id="acciones" name="acciones" type="number" min="0" step="1" placeholder="10" [ngModel]="acciones()" (ngModelChange)="acciones.set($event)">
+      </div>
+
+      <div class="campo">
+        <span class="campo-label-estatico">Precio por acción</span>
+        <div class="precio-automatico">
+          @if (precioCargando()) {
+            <span class="precio-estado">Consultando…</span>
+          } @else if (precioError()) {
+            <span class="precio-estado precio-estado-error">⚠️ {{ precioError() }}</span>
+          } @else if (precioAutomatico() !== null) {
+            <span class="precio-valor">${{ precioAutomatico() | number: '1.2-2' }}</span>
+          } @else {
+            <span class="precio-estado">Elige una empresa</span>
+          }
+        </div>
+      </div>
+
+      <button type="submit" class="boton-agregar" [disabled]="precioCargando()">➕ Agregar posición</button>
+    </form>
+    @if (error()) {
+      <p class="error">⚠️ {{ error() }}</p>
+    }
+  </section>
+</div>

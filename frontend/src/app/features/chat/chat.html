@@ -1,0 +1,85 @@
+<main class="chat">
+  <header>
+    <div class="avatar">💼</div>
+    <div>
+      <h1>Inver-AI <span class="estado" title="En línea"></span></h1>
+      <p>Atención personalizada · disponible ahora</p>
+    </div>
+  </header>
+
+  <div id="mensajes" #mensajesEl>
+    @for (mensaje of mensajes(); track mensaje.id) {
+      <div class="fila" [class.usuario]="mensaje.autor === 'usuario'" [class.asistente]="mensaje.autor === 'asistente'">
+        <div class="icono-msg">{{ mensaje.autor === 'usuario' ? '🧑' : '💼' }}</div>
+
+        <div class="columna-mensaje">
+          <div class="burbuja">
+            @if (mensaje.autor === 'asistente') {
+              <app-markdown [contenido]="mensaje.texto" />
+            } @else {
+              <span class="texto-usuario">{{ mensaje.texto }}</span>
+            }
+          </div>
+
+          @if (mensaje.autor === 'asistente') {
+            <div class="feedback">
+              <button
+                type="button"
+                class="voto"
+                [class.activo]="mensaje.voto === 'positivo'"
+                [class.positivo]="mensaje.voto === 'positivo'"
+                aria-label="Respuesta útil"
+                (click)="seleccionarVoto(mensaje, 'positivo')"
+              >👍</button>
+              <button
+                type="button"
+                class="voto"
+                [class.activo]="mensaje.voto === 'negativo'"
+                [class.negativo]="mensaje.voto === 'negativo'"
+                aria-label="Respuesta no útil"
+                (click)="seleccionarVoto(mensaje, 'negativo')"
+              >👎</button>
+            </div>
+
+            @if (mensaje.mostrandoCaja) {
+              <div class="caja-retro">
+                <textarea placeholder="Cuéntenos qué podemos mejorar (opcional)…"></textarea>
+                <div class="acciones-retro">
+                  <button type="button" class="boton-mini enviar" (click)="finalizarRetroalimentacion(mensaje)">Enviar</button>
+                  <button type="button" class="boton-mini omitir" (click)="finalizarRetroalimentacion(mensaje)">Omitir</button>
+                </div>
+              </div>
+            }
+
+            @if (mensaje.confirmado) {
+              <div class="confirmacion-retro">✅ Gracias, su solicitud fue procesada.</div>
+            }
+          }
+        </div>
+      </div>
+    }
+
+    @if (escribiendo()) {
+      <div class="fila asistente">
+        <div class="icono-msg">💼</div>
+        <div class="columna-mensaje">
+          <div class="burbuja">
+            <span class="escribiendo puntos"><span>•</span><span>•</span><span>•</span></span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <form (ngSubmit)="enviar()">
+    <input
+      type="text"
+      placeholder="Escriba su consulta…"
+      autocomplete="off"
+      autofocus
+      name="entrada"
+      [(ngModel)]="entrada"
+    >
+    <button type="submit">Enviar</button>
+  </form>
+</main>

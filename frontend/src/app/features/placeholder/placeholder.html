@@ -1,0 +1,7 @@
+<section class="tarjeta">
+  <div class="icono">{{ item?.icono ?? '🚧' }}</div>
+  <span class="etiqueta">Próximamente</span>
+  <h1>{{ item?.etiqueta ?? 'Vista en construcción' }}</h1>
+  <p>{{ item?.descripcion ?? 'Esta pantalla se construirá más adelante.' }}</p>
+  <a class="boton" routerLink="/chat">💬 Ir al asistente</a>
+</section>

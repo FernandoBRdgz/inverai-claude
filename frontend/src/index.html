@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Inver-AI</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Motor de gráficas para la Comparativa de compañías (app/services/visualization.py
+       en el backend genera las figuras; Plotly.js solo las dibuja). Por CDN, no por npm,
+       para no sumar ~3 MB al bundle propio de Angular. -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script>
+    // Aplica el tema guardado ANTES de que Angular arranque, para evitar parpadeos.
+    // ThemeService reutiliza esta misma clave y atributo una vez la app está viva.
+    (function () {
+      var guardado = localStorage.getItem("tema");
+      var prefiereOscuro = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var tema = guardado || (prefiereOscuro ? "oscuro" : "claro");
+      document.documentElement.setAttribute("data-tema", tema);
+    })();
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

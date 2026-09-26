@@ -1,0 +1,94 @@
+<div class="pagina">
+  <header class="encabezado">
+    <h1>🛡️ Administración</h1>
+    <p>Estado del asistente y resumen de esta sesión, de un vistazo.</p>
+  </header>
+
+  <section class="grilla-kpis">
+    <!-- Estado del sistema (backend) -->
+    <div class="kpi">
+      <span class="kpi-etiqueta">Backend</span>
+      @if (estadoCarga() === 'cargando') {
+        <span class="kpi-valor kpi-cargando">Consultando…</span>
+      } @else if (estadoCarga() === 'error') {
+        <span class="kpi-valor kpi-mal">❌ Sin conexión</span>
+      } @else {
+        <span class="kpi-valor kpi-bien">✅ Conectado</span>
+      }
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-etiqueta">OpenAI</span>
+      @if (estadoCarga() === 'cargando') {
+        <span class="kpi-valor kpi-cargando">Consultando…</span>
+      } @else if (estadoCarga() === 'error') {
+        <span class="kpi-valor kpi-neutro">—</span>
+      } @else if (estado()!.openai_configurado) {
+        <span class="kpi-valor kpi-bien">✅ Configurado</span>
+      } @else {
+        <span class="kpi-valor kpi-alerta">⚠️ Modo demostración</span>
+      }
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-etiqueta">AlphaVantage</span>
+      @if (estadoCarga() === 'cargando') {
+        <span class="kpi-valor kpi-cargando">Consultando…</span>
+      } @else if (estadoCarga() === 'error') {
+        <span class="kpi-valor kpi-neutro">—</span>
+      } @else if (estado()!.alphavantage_configurado) {
+        <span class="kpi-valor kpi-bien">✅ Configurado</span>
+      } @else {
+        <span class="kpi-valor kpi-alerta">⚠️ Sin configurar</span>
+      }
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-etiqueta">Modelo activo</span>
+      @if (estadoCarga() === 'ok') {
+        <span class="kpi-valor">{{ estado()!.modelo }}</span>
+      } @else {
+        <span class="kpi-valor kpi-neutro">—</span>
+      }
+    </div>
+
+    <!-- Resumen de esta sesión (Historial / Portafolio) -->
+    <div class="kpi">
+      <span class="kpi-etiqueta">Conversaciones (sesión)</span>
+      <span class="kpi-valor">{{ conversaciones() }}</span>
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-etiqueta">Mensajes enviados</span>
+      <span class="kpi-valor">{{ mensajesEnviados() }}</span>
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-etiqueta">Posiciones registradas</span>
+      <span class="kpi-valor">{{ posicionesRegistradas() }}</span>
+    </div>
+
+    <div class="kpi">
+      <span class="kpi-etiqueta">Valor del portafolio</span>
+      @if (valorPortafolio(); as valor) {
+        <span class="kpi-valor">${{ valor | number: '1.0-0' }}</span>
+      } @else {
+        <span class="kpi-valor kpi-neutro">—</span>
+      }
+    </div>
+  </section>
+
+  <section class="reset">
+    @if (confirmandoReset()) {
+      <span class="confirmar-reset">
+        <span class="confirmar-texto">¿Restablecer historial y portafolio de esta sesión?</span>
+        <button type="button" class="btn-confirmar-si" (click)="confirmarReset()">Sí</button>
+        <button type="button" class="btn-confirmar-no" (click)="cancelarReset()">Cancelar</button>
+      </span>
+    } @else {
+      <button type="button" class="boton-reset" (click)="pedirConfirmacionReset()">
+        🔄 Restablecer datos de esta sesión
+      </button>
+    }
+  </section>
+</div>

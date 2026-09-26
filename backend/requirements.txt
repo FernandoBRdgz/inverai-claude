@@ -1,0 +1,16 @@
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+pydantic>=2.7,<3.0
+pydantic-settings>=2.3,<3.0
+pytest>=8.2,<9.0
+httpx>=0.27,<1.0
+openai>=3.0,<4.0
+
+# Usadas por app/services/utils.py (herramientas de datos financieros)
+requests>=2.31,<3.0
+pandas>=2.2,<3.0
+numpy>=1.26,<3.0
+python-dotenv>=1.0,<2.0
+
+# Usada por app/services/visualization.py (gráficas de la Comparativa de compañías)
+plotly>=5.24,<7.0

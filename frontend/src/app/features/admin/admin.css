@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.pagina {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 8px 4px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.encabezado h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.encabezado p {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+/* ---------- Grilla de KPIs ---------- */
+.grilla-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+}
+.kpi-etiqueta {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+.kpi-valor {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.kpi-cargando {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+.kpi-neutro {
+  color: var(--texto-suave);
+}
+.kpi-bien {
+  color: #2f9e6e;
+}
+.kpi-alerta {
+  color: var(--oro);
+}
+.kpi-mal {
+  color: #c0392b;
+}
+
+/* ---------- Restablecer datos de sesión ---------- */
+.reset {
+  display: flex;
+}
+.boton-reset {
+  padding: 10px 16px;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: var(--tarjeta);
+  color: var(--texto-suave);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.boton-reset:hover {
+  background: var(--bg);
+}
+
+.confirmar-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.confirmar-texto {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+.btn-confirmar-si,
+.btn-confirmar-no {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-confirmar-si {
+  background: #c0392b;
+  color: #fff;
+}
+.btn-confirmar-si:hover {
+  background: #a5311f;
+}
+.btn-confirmar-no {
+  background: var(--bg);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+}
+.btn-confirmar-no:hover {
+  background: var(--borde);
+}

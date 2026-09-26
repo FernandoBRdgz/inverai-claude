@@ -1,0 +1,65 @@
+<div class="pagina">
+  <header class="encabezado">
+    <h1>⚖️ Comparativa de compañías</h1>
+    <p>Elige una compañía a cada lado y compara sus gráficas, categoría por categoría.</p>
+  </header>
+
+  <nav class="pestanas">
+    @for (cat of categorias; track cat.valor) {
+      <button
+        type="button"
+        class="pestana"
+        [class.activa]="categoria() === cat.valor"
+        (click)="cambiarCategoria(cat.valor)"
+      >{{ cat.etiqueta }}</button>
+    }
+  </nav>
+
+  <section class="dual">
+    <!-- Lado izquierdo -->
+    <div class="lado">
+      <select
+        class="selector"
+        [ngModel]="izquierda().ticker"
+        (ngModelChange)="cambiarTicker('izquierda', $event)"
+      >
+        @for (empresa of empresas; track empresa.ticker) {
+          <option [value]="empresa.ticker">{{ empresa.nombre }} ({{ empresa.ticker }})</option>
+        }
+      </select>
+
+      @if (izquierda().cargando) {
+        <p class="estado-carga">Cargando gráficas…</p>
+      } @else if (izquierda().error) {
+        <p class="estado-error">⚠️ {{ izquierda().error }}</p>
+      } @else {
+        @for (fig of izquierda().figuras; track $index) {
+          <app-plotly-chart class="grafica" [figura]="fig" />
+        }
+      }
+    </div>
+
+    <!-- Lado derecho -->
+    <div class="lado">
+      <select
+        class="selector"
+        [ngModel]="derecha().ticker"
+        (ngModelChange)="cambiarTicker('derecha', $event)"
+      >
+        @for (empresa of empresas; track empresa.ticker) {
+          <option [value]="empresa.ticker">{{ empresa.nombre }} ({{ empresa.ticker }})</option>
+        }
+      </select>
+
+      @if (derecha().cargando) {
+        <p class="estado-carga">Cargando gráficas…</p>
+      } @else if (derecha().error) {
+        <p class="estado-error">⚠️ {{ derecha().error }}</p>
+      } @else {
+        @for (fig of derecha().figuras; track $index) {
+          <app-plotly-chart class="grafica" [figura]="fig" />
+        }
+      }
+    </div>
+  </section>
+</div>

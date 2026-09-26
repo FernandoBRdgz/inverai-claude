@@ -1,0 +1,302 @@
+/* Las variables de color y las reglas de html[data-tema] viven en src/styles.css
+   (son globales, se comparten con el chat). Aquí solo el layout propio de la landing. */
+
+.contenedor {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Barra de navegación ---------- */
+header.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg-alt) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--borde);
+}
+.nav-interior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.logo-icono {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--marino-1), var(--marino-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  border-top: 2px solid var(--oro);
+}
+nav.enlaces {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+nav.enlaces a {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+  transition: color 0.2s;
+}
+nav.enlaces a:hover { color: var(--texto); }
+
+.acciones-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+#toggle-tema {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+}
+#toggle-tema:hover { transform: translateY(-1px); }
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.boton-primario {
+  background: linear-gradient(135deg, var(--marino-1), var(--marino-2));
+  color: #fff;
+  border-top: 2px solid var(--oro);
+  box-shadow: 0 6px 18px var(--sombra);
+}
+.boton-primario:hover { transform: translateY(-2px); }
+.boton-nav { padding: 9px 18px; font-size: 0.85rem; }
+
+/* ---------- Hero ---------- */
+.hero {
+  padding: 88px 24px 96px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 20%, color-mix(in srgb, var(--oro) 14%, transparent), transparent 45%),
+    radial-gradient(circle at 88% 80%, color-mix(in srgb, var(--marino-2) 18%, transparent), transparent 45%);
+  pointer-events: none;
+}
+.hero-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: center;
+}
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oro) 16%, transparent);
+  color: var(--oro);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+:host-context(html[data-tema="oscuro"]) .etiqueta { color: var(--oro-claro); }
+.hero h1 {
+  font-size: clamp(2.1rem, 4vw, 3.1rem);
+  line-height: 1.15;
+  margin: 0 0 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.hero h1 span {
+  background: linear-gradient(120deg, var(--marino-2), var(--oro));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero p.subtexto {
+  font-size: 1.05rem;
+  color: var(--texto-suave);
+  max-width: 480px;
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+.hero-cta { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.enlace-secundario {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--texto);
+  border-bottom: 2px solid var(--oro);
+  padding-bottom: 2px;
+}
+
+.metricas {
+  display: flex;
+  gap: 36px;
+  margin-top: 48px;
+}
+.metrica strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--texto);
+}
+.metrica span {
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+}
+
+/* Mockup del chat, decorativo */
+.mockup {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px var(--sombra);
+  overflow: hidden;
+}
+.mockup-barra {
+  background: linear-gradient(135deg, var(--marino-1), var(--marino-2));
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 3px solid var(--oro);
+}
+.mockup-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(230,205,143,0.18);
+  border: 1px solid rgba(230,205,143,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.mockup-barra div.info strong { display:block; color:#fff; font-size:0.92rem; }
+.mockup-barra div.info span { color: var(--oro-claro); font-size: 0.75rem; }
+.mockup-cuerpo { padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.burbuja-demo {
+  max-width: 78%;
+  padding: 10px 15px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.burbuja-demo.izq {
+  align-self: flex-start;
+  background: color-mix(in srgb, var(--oro) 10%, var(--superficie));
+  border-left: 3px solid var(--oro);
+  color: var(--texto);
+}
+.burbuja-demo.der {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--marino-1), var(--marino-2));
+  color: #fff;
+}
+
+/* ---------- Servicios ---------- */
+.servicios { padding: 90px 24px; }
+.titulo-seccion {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 56px;
+}
+.titulo-seccion .etiqueta { margin-bottom: 14px; }
+.titulo-seccion h2 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+.titulo-seccion p { color: var(--texto-suave); font-size: 1rem; margin: 0; }
+
+.grid-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 28px 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px var(--sombra);
+}
+.tarjeta-icono {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--oro-claro), var(--oro));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 18px;
+}
+.tarjeta h3 { margin: 0 0 8px; font-size: 1.05rem; font-weight: 700; }
+.tarjeta p { margin: 0; color: var(--texto-suave); font-size: 0.9rem; line-height: 1.55; }
+
+/* ---------- CTA final ---------- */
+.cta-final {
+  margin: 0 24px 90px;
+  max-width: 1120px;
+  margin-inline: auto;
+  background: linear-gradient(135deg, var(--marino-1), var(--marino-2));
+  border-radius: 24px;
+  padding: 64px 40px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  border-top: 4px solid var(--oro);
+}
+.cta-final h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 12px; font-weight: 800; }
+.cta-final p { color: var(--oro-claro); margin: 0 0 30px; font-size: 1rem; }
+.cta-final .boton-primario {
+  background: #fff;
+  color: var(--marino-1);
+  border-top: none;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--borde);
+}
+
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  nav.enlaces { display: none; }
+  .metricas { gap: 24px; }
+}

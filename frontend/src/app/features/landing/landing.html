@@ -1,0 +1,101 @@
+<header class="nav">
+  <div class="nav-interior">
+    <div class="logo">
+      <span class="logo-icono">💼</span>
+      Inver-AI
+    </div>
+    <nav class="enlaces">
+      <a href="#inicio">Inicio</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="acciones-nav">
+      <button
+        id="toggle-tema"
+        aria-label="Cambiar entre modo claro y oscuro"
+        title="Cambiar tema"
+        (click)="theme.alternar()"
+      >{{ theme.tema() === 'oscuro' ? '☀️' : '🌙' }}</button>
+      <a class="boton boton-primario boton-nav" routerLink="/chat">Iniciar chat</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero" id="inicio">
+  <div class="contenedor hero-grid">
+    <div>
+      <span class="etiqueta">✨ Asesoría inteligente 24/7</span>
+      <h1><span>Inver-AI</span>: su asesor financiero de confianza, siempre disponible</h1>
+      <p class="subtexto">
+        Converse con nuestro asistente en cualquier momento y reciba una atención cercana,
+        clara y profesional para acompañarle en sus decisiones financieras.
+      </p>
+      <div class="hero-cta">
+        <a class="boton boton-primario" routerLink="/chat">💬 Iniciar conversación</a>
+        <a class="enlace-secundario" href="#servicios">Conocer más ↓</a>
+      </div>
+      <div class="metricas">
+        <div class="metrica"><strong>24/7</strong><span>Disponibilidad</span></div>
+        <div class="metrica"><strong>100%</strong><span>Confidencial</span></div>
+        <div class="metrica"><strong>&lt;1 min</strong><span>Tiempo de respuesta</span></div>
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="mockup-barra">
+        <div class="mockup-avatar">💼</div>
+        <div class="info">
+          <strong>Inver-AI</strong>
+          <span>● En línea ahora</span>
+        </div>
+      </div>
+      <div class="mockup-cuerpo">
+        <div class="burbuja-demo izq">Bienvenido a Inver-AI. Soy su asistente financiero, escríbame lo que necesite.</div>
+        <div class="burbuja-demo der">Hola, quisiera una orientación</div>
+        <div class="burbuja-demo izq">¡Hola! Un placer atenderle. 🤝</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="servicios" id="servicios">
+  <div class="contenedor">
+    <div class="titulo-seccion">
+      <span class="etiqueta">Por qué elegirnos</span>
+      <h2>Una experiencia pensada para su tranquilidad</h2>
+      <p>Combinamos cercanía humana con la disponibilidad de la tecnología.</p>
+    </div>
+    <div class="grid-tarjetas">
+      <div class="tarjeta">
+        <div class="tarjeta-icono">📈</div>
+        <h3>Estrategias personalizadas</h3>
+        <p>Orientación adaptada a sus objetivos, sin recomendaciones genéricas.</p>
+      </div>
+      <div class="tarjeta">
+        <div class="tarjeta-icono">🔒</div>
+        <h3>Seguridad y confidencialidad</h3>
+        <p>Su información se trata con el máximo cuidado en cada conversación.</p>
+      </div>
+      <div class="tarjeta">
+        <div class="tarjeta-icono">⏱️</div>
+        <h3>Disponible en todo momento</h3>
+        <p>Sin horarios de oficina: escríbanos cuando lo necesite.</p>
+      </div>
+      <div class="tarjeta">
+        <div class="tarjeta-icono">🤝</div>
+        <h3>Atención cercana</h3>
+        <p>Un trato cálido y profesional en cada interacción.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final" id="contacto">
+  <h2>¿Listo para conversar con Inver-AI?</h2>
+  <p>La primera consulta toma menos de un minuto.</p>
+  <a class="boton boton-primario" routerLink="/chat">💬 Iniciar conversación</a>
+</section>
+
+<footer>
+  © 2026 Inver-AI · Proyecto educativo del Diplomado
+</footer>

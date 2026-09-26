@@ -1,0 +1,62 @@
+<div class="pagina">
+  <header class="encabezado">
+    <div>
+      <h1>🕘 Historial</h1>
+      <p>Retoma una conversación anterior con el asistente.</p>
+    </div>
+    @if (conversaciones().length > 0) {
+      @if (confirmandoVaciar()) {
+        <span class="confirmar-vaciar">
+          <span class="confirmar-texto">¿Vaciar todo el historial?</span>
+          <button type="button" class="btn-confirmar-si" (click)="confirmarVaciar()">Sí</button>
+          <button type="button" class="btn-confirmar-no" (click)="cancelarVaciar()">Cancelar</button>
+        </span>
+      } @else {
+        <button type="button" class="boton-vaciar" (click)="pedirConfirmacionVaciar()">🧹 Vaciar historial</button>
+      }
+    }
+  </header>
+
+  <p class="aviso">
+    📌 Este historial es de <strong>esta sesión del navegador</strong> — no se sincroniza entre
+    dispositivos ni se envía al servidor, y se borra solo al cerrar la pestaña.
+  </p>
+
+  @if (conversaciones().length === 0) {
+    <div class="vacio">
+      <div class="vacio-icono">💬</div>
+      <h2>Todavía no hay conversaciones</h2>
+      <p>Escríbele al asistente y tus conversaciones aparecerán aquí.</p>
+      <a class="boton-ir" routerLink="/chat">Ir al asistente</a>
+    </div>
+  } @else {
+    <ul class="lista">
+      @for (conv of conversaciones(); track conv.id) {
+        <li class="tarjeta">
+          <a class="tarjeta-cuerpo" [routerLink]="['/chat']" [queryParams]="{ id: conv.id }">
+            <span class="tarjeta-titulo">{{ conv.titulo }}</span>
+            <span class="tarjeta-meta">
+              {{ fechaRelativa(conv.actualizadaEn) }} · {{ conv.mensajes.length }} mensaje{{ conv.mensajes.length === 1 ? '' : 's' }}
+            </span>
+          </a>
+
+          @if (confirmandoId() === conv.id) {
+            <span class="confirmar-baja">
+              <span class="confirmar-texto">¿Eliminar?</span>
+              <button type="button" class="btn-confirmar-si" (click)="confirmarEliminacion(conv.id)">Sí</button>
+              <button type="button" class="btn-confirmar-no" (click)="cancelarEliminacion()">Cancelar</button>
+            </span>
+          } @else {
+            <button
+              type="button"
+              class="btn-eliminar"
+              title="Eliminar conversación"
+              [attr.aria-label]="'Eliminar conversación: ' + conv.titulo"
+              (click)="pedirConfirmacion(conv.id)"
+            >🗑️</button>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

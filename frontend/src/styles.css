@@ -1,0 +1,76 @@
+/* Estilos globales de Inver-AI: variables de marca + tema claro/oscuro compartido
+   entre todas las páginas (landing, chat, futuras pantallas). */
+
+:root {
+  --marino-1: #0f1f38;
+  --marino-2: #1c3a63;
+  --oro: #b68d40;
+  --oro-claro: #e6cd8f;
+  --acento-texto: #ffffff;
+
+  --bg: #eef1f5;
+  --bg-alt: #ffffff;
+  --superficie: #ffffff;
+  --tarjeta: #ffffff;
+  --texto: #1c2430;
+  --texto-suave: #5b6577;
+  --borde: #e3e7ee;
+  --sombra: rgba(15, 31, 56, 0.14);
+  --burbuja-asistente: #f4f6f9;
+
+  /* Paleta categórica para gráficos (dataviz): 8 tonos validados para CVD en
+     claro/oscuro, orden fijo — nunca reordenar ni generar un 9º tono. La marca
+     (marino/dorado) no tiene un ramp categórico propio, por eso se usa esta. */
+  --serie-1: #2a78d6; /* azul */
+  --serie-2: #eb6834; /* naranja */
+  --serie-3: #1baf7a; /* aqua */
+  --serie-4: #eda100; /* amarillo */
+  --serie-5: #e87ba4; /* magenta */
+  --serie-6: #008300; /* verde */
+  --serie-7: #4a3aa7; /* violeta */
+  --serie-8: #e34948; /* rojo */
+}
+
+html[data-tema="oscuro"] {
+  --bg: #0b1220;
+  --bg-alt: #0f1a2c;
+  --superficie: #131f33;
+  --tarjeta: #131f33;
+  --texto: #eef1f5;
+  --texto-suave: #9aa7bd;
+  --borde: #22314a;
+  --sombra: rgba(0, 0, 0, 0.45);
+  --oro-claro: #f0dcaa;
+  --burbuja-asistente: #1a2740;
+
+  --serie-1: #3987e5;
+  --serie-2: #d95926;
+  --serie-3: #199e70;
+  --serie-4: #c98500;
+  --serie-5: #d55181;
+  --serie-6: #008300;
+  --serie-7: #9085e9;
+  --serie-8: #e66767;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--texto);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

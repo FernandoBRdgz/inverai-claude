@@ -1,0 +1,52 @@
+<aside class="sidebar" [class.colapsado]="sidebar.colapsado()">
+  <div class="cabecera">
+    <a class="marca" routerLink="/" title="Inver-AI · Inicio">
+      <span class="marca-icono">💼</span>
+      <span class="marca-texto">Inver-AI</span>
+    </a>
+    <button
+      type="button"
+      class="btn-colapsar"
+      [attr.aria-expanded]="!sidebar.colapsado()"
+      [attr.aria-label]="sidebar.colapsado() ? 'Expandir panel de navegación' : 'Colapsar panel de navegación'"
+      [title]="sidebar.colapsado() ? 'Expandir panel' : 'Colapsar panel'"
+      (click)="sidebar.alternar()"
+    >{{ sidebar.colapsado() ? '»' : '«' }}</button>
+  </div>
+
+  <nav class="menu" aria-label="Navegación principal">
+    @for (seccion of secciones; track seccion.nombre) {
+      <div class="seccion">
+        <p class="seccion-titulo">{{ seccion.nombre }}</p>
+        @for (item of seccion.items; track item.ruta) {
+          <a
+            class="enlace"
+            [routerLink]="item.ruta"
+            routerLinkActive="activo"
+            ariaCurrentWhenActive="page"
+            [title]="item.etiqueta"
+          >
+            <span class="enlace-icono">{{ item.icono }}</span>
+            <span class="enlace-texto">{{ item.etiqueta }}</span>
+          </a>
+        }
+      </div>
+    }
+  </nav>
+
+  <div class="pie">
+    <button
+      type="button"
+      class="enlace"
+      [title]="theme.tema() === 'oscuro' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+      (click)="theme.alternar()"
+    >
+      <span class="enlace-icono">{{ theme.tema() === 'oscuro' ? '☀️' : '🌙' }}</span>
+      <span class="enlace-texto">{{ theme.tema() === 'oscuro' ? 'Modo claro' : 'Modo oscuro' }}</span>
+    </button>
+    <a class="enlace" routerLink="/" title="Volver al inicio">
+      <span class="enlace-icono">🏠</span>
+      <span class="enlace-texto">Volver al inicio</span>
+    </a>
+  </div>
+</aside>
