@@ -4,9 +4,9 @@ Proyecto educativo del Diplomado: un asesor financiero conversacional. El reposi
 está dividido en dos carpetas principales, pensadas para crecer de forma independiente:
 
 ```
-dummy/
-├── backend/   # API en FastAPI (Python) — lógica de negocio
-└── frontend/  # Aplicación en Angular (TypeScript) — interfaz de usuario
+backend/       # API en FastAPI (Python) — lógica de negocio
+frontend/      # Aplicación en Angular (TypeScript) — interfaz de usuario
+vercel.json    # Config de despliegue (Vercel Services — ver sección "Despliegue en Vercel")
 ```
 
 La landing y el chat (antes `index.html`/`chat.html` estáticos) ahora viven como páginas
@@ -20,8 +20,13 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --reload-dir app --port 8000
 ```
+
+`--reload-dir app` es importante: sin él, `--reload` vigila toda la carpeta `backend/`,
+incluido `.venv/`. Cualquier escritura dentro del entorno virtual (instalar dependencias,
+caché de bytecode) dispara un reinicio del servidor, y cada reinicio corta a mitad de camino
+cualquier llamada en curso a AlphaVantage — que puede tardar minutos (ver más abajo).
 
 - Documentación interactiva: http://localhost:8000/docs
 - Salud del servicio: http://localhost:8000/health — además de `status`, expone si OpenAI y
@@ -86,6 +91,17 @@ de error habitual. Los tests (`pytest`) no usan red ni claves reales.
   encadena ~10 llamadas de ese tipo. Si el asistente responde "no pude completar la consulta"
   más seguido de lo esperado, sube `TIMEOUT_TOOL_SEGUNDOS`/`TIMEOUT_TOOL_LARGO_SEGUNDOS` en
   `tools.py` (el asistente nunca inventa cifras si la herramienta falla o tarda demasiado).
+- **Cada `requests.get()` de `utils.py` lleva `timeout=TIMEOUT_ALPHAVANTAGE_SEGUNDOS` (100s).**
+  Sin ese timeout, una conexión colgada bloqueaba su hilo (`asyncio.to_thread`) para siempre:
+  `asyncio.wait_for()` cancela la *espera* del lado de asyncio, pero no puede matar el hilo
+  real, así que seguía vivo indefinidamente y nunca liberaba su cupo en el thread pool. Con un
+  par de llamadas fallidas (por ejemplo, al comparar dos compañías, cada una con hasta 4
+  llamadas) el pool se saturaba y hasta las peticiones nuevas se quedaban colgadas para
+  siempre, aunque AlphaVantage respondiera con normalidad. Por el mismo motivo,
+  `backend/app/api/v1/endpoints/comparativa.py` subió sus timeouts por categoría (antes 180s/
+  300s, ahora `TIMEOUT_SEGUNDOS=420` para `income`/`fcf`/`precio` y `TIMEOUT_LARGO_SEGUNDOS=850`
+  para `roic`), ya que estas categorías encadenan hasta 4-8 llamadas secuenciales y el límite
+  anterior se quedaba corto incluso en condiciones normales.
 - **Modelos con razonamiento (reasoning):** si tu `OPENAI_MODEL` es de este tipo, la primera
   llamada con tools puede fallar con un 400 de OpenAI (`param: reasoning_effort`). `agents.py`
   ya lo detecta y reintenta automáticamente con `reasoning_effort="none"`; no hace falta nada
@@ -113,12 +129,57 @@ ng serve
 
 Se necesitan **dos terminales**, una por servicio:
 
-1. Terminal 1: `cd backend && source .venv/bin/activate && uvicorn app.main:app --reload --port 8000`
+1. Terminal 1: `cd backend && source .venv/bin/activate && uvicorn app.main:app --reload --reload-dir app --port 8000`
 2. Terminal 2: `cd frontend && ng serve`
 
 Con ambos corriendo, abrir http://localhost:4200, ir a "Iniciar chat" y escribir un mensaje:
 la respuesta del asistente llega desde el backend (se puede confirmar en la pestaña Network
 del navegador, como una petición `POST` a `http://localhost:8000/api/v1/chat`).
+
+## Despliegue en Vercel
+
+`vercel.json` (raíz del repo) usa la feature [Services](https://vercel.com/docs/services)
+de Vercel para desplegar frontend y backend como un solo proyecto, en un solo dominio:
+
+```json
+{
+    "services": {
+        "frontend": { "root": "frontend", "framework": "angular" },
+        "backend": { "root": "backend", "framework": "fastapi", "entrypoint": "app.main:app" }
+    },
+    "rewrites": [
+        { "source": "/api(/.*)?", "destination": { "type": "service", "service": "backend" } },
+        { "source": "/health", "destination": { "type": "service", "service": "backend" } },
+        { "source": "/(.*)", "destination": { "type": "service", "service": "frontend" } }
+    ]
+}
+```
+
+- `entrypoint: "app.main:app"` le dice a Vercel dónde vive la app ASGI dentro del servicio
+  `backend` — mismo módulo:variable que usa `uvicorn app.main:app` en local.
+- La regla `/health` es necesaria además de `/api(/.*)?`: el panel de Administración del
+  frontend (`features/admin/`) llama a `/health` en la raíz, no bajo `/api/v1` (ver
+  `frontend/src/app/features/admin/services/estado.ts`). Sin esa regla, caería en el catch-all
+  hacia el frontend en vez de llegar al backend.
+- `frontend/src/environments/environment.ts` (producción) ya usa la ruta relativa `/api/v1`,
+  así que no necesita ninguna variable de entorno en build — las rewrites resuelven todo bajo
+  el mismo dominio.
+
+**En el dashboard de Vercel** (pantalla de import/configuración del proyecto):
+- **Root Directory** debe quedar en `./` — es donde Vercel busca `vercel.json` con la clave
+  `services`. Cambiarlo a `frontend` o `backend` hace que deje de verla.
+- **Build and Output Settings** (Build/Output/Install Command) deben quedar apagados: en modo
+  `services` esos ajustes se definen por servicio dentro de `vercel.json`, no a nivel de
+  proyecto.
+- **Environment Variables** sí hay que llenarlas ahí (no van en `vercel.json`), con las mismas
+  claves de `backend/.env.example`: `OPENAI_API_KEY`, `OPENAI_MODEL`,
+  `ALPHAVANTAGE_API_KEY`, `INVERAI_ALPHAVANTAGE_CACHE_TTL`, `INVERAI_ORIGENES_CORS`.
+
+**Pendiente sin resolver:** las funciones serverless de Vercel tienen un límite de duración
+muy por debajo de lo que tardan los endpoints que encadenan varias llamadas a AlphaVantage
+(`/api/v1/comparativa/graficas`, la tool `get_intrinsic_value` del chat — ver timeouts arriba,
+de hasta 850s). Es probable que esas vistas fallen por timeout en producción tal como está hoy;
+no es algo que resuelva la config de despliegue.
 
 ## Estructura pensada para crecer
 
