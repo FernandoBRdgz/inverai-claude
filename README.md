@@ -13,6 +13,37 @@ La landing y el chat (antes `index.html`/`chat.html` estáticos) ahora viven com
 Angular en `frontend/src/app/features/`, y el saludo del asistente ya no se genera en el
 navegador: el frontend llama a un endpoint real del backend (`POST /api/v1/chat`).
 
+## Arquitectura
+
+```mermaid
+graph TD
+    Usuario(["🧑 Usuario"])
+
+    subgraph Frontend["frontend/ · Angular · :4200"]
+        UI["Vistas: chat, comparativa,<br/>portafolio, historial, admin"]
+    end
+
+    subgraph Backend["backend/ · FastAPI · :8000"]
+        API["/api/v1/*<br/>(chat, comparativa, cotizacion)"]
+        Health["/health"]
+        Services["app/services/<br/>prompt · agents · tools · utils · alphavantage"]
+    end
+
+    OpenAI[("OpenAI API")]
+    AlphaVantage[("AlphaVantage API")]
+
+    Usuario --> UI
+    UI -->|"POST /chat · GET /comparativa/graficas<br/>GET /cotizacion"| API
+    UI -->|"GET /health<br/>(panel de Administración)"| Health
+    API --> Services
+    Health --> Services
+    Services --> OpenAI
+    Services --> AlphaVantage
+```
+
+En producción (Vercel) ambos servicios quedan bajo el mismo dominio — ver
+["Despliegue en Vercel"](#despliegue-en-vercel) para el diagrama de ruteo.
+
 ## Backend (FastAPI)
 
 ```bash
@@ -51,6 +82,28 @@ La lógica de negocio vive en `backend/app/services/`, separada del endpoint HTT
 
 `POST /api/v1/chat` llama a `services/prompt.py`, que orquesta al modelo de OpenAI y, si tu
 agente lo pide, a AlphaVantage. El contrato HTTP no cambia (`{"mensaje"}` → `{"respuesta"}`).
+
+```mermaid
+sequenceDiagram
+    actor U as Usuario
+    participant F as Frontend (Angular)
+    participant B as Backend (FastAPI)
+    participant O as OpenAI
+    participant AV as AlphaVantage
+
+    U->>F: Escribe un mensaje
+    F->>B: POST /api/v1/chat {mensaje}
+    B->>O: 1ª llamada (SYSTEM_PROMPT + historial + TOOLS)
+    alt El modelo pide una tool financiera
+        O-->>B: tool_call (p. ej. get_intrinsic_value)
+        B->>AV: Llamadas encadenadas vía utils.py<br/>(income, balance, cashflow, earnings...)
+        AV-->>B: Datos financieros crudos
+        B->>O: 2ª llamada con el resultado de la tool
+    end
+    O-->>B: Respuesta final en texto/Markdown
+    B-->>F: {respuesta}
+    F-->>U: Muestra la respuesta en el chat
+```
 
 **1. Configurar las claves** (solo en el backend; nunca se envían al frontend):
 
@@ -153,6 +206,18 @@ de Vercel para desplegar frontend y backend como un solo proyecto, en un solo do
         { "source": "/(.*)", "destination": { "type": "service", "service": "frontend" } }
     ]
 }
+```
+
+Las `rewrites` se evalúan en orden — la primera regla que matchea decide el destino:
+
+```mermaid
+graph TD
+    P(["Petición entrante<br/>al dominio de Vercel"]) --> Q1{"¿coincide con<br/>/api(/.*)?"}
+    Q1 -->|sí| Back["service: backend<br/>(FastAPI)"]
+    Q1 -->|no| Q2{"¿coincide con<br/>/health?"}
+    Q2 -->|sí| Back
+    Q2 -->|no| Q3["catch-all: /(.*)"]
+    Q3 --> Front["service: frontend<br/>(Angular)"]
 ```
 
 - `entrypoint: "app.main:app"` le dice a Vercel dónde vive la app ASGI dentro del servicio
